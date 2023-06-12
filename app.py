@@ -1,6 +1,5 @@
 import os
-
-import openai
+from bardapi import Bard
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request, session
 
@@ -12,8 +11,8 @@ app = Flask(__name__)
 # Generate a random secret key for the Flask application
 app.secret_key = os.urandom(24)
 # Set the OpenAI API key from the environment variable
-openai.api_key = os.environ["OPENAI_API_KEY"]
-
+token = os.environ['token']
+bard = Bard(token=token)
 # Read the content of the "system_card.txt" file
 with open("system_card.txt", "r") as file:
     system = file.read()
@@ -35,21 +34,23 @@ def generate():
     history = data["history"]
 
     # Create a list of message dictionaries for the OpenAI API
-    messages = [{"role": msg["role"], "content": msg["content"]} for msg in history]
+    # messages = [{"role": msg["role"], "content": msg["content"]} for msg in history]
+    messages = str(history) + str(user_message)
     # Append the system message from the "system_card.txt" file
-    messages.append({"role": "system", "content": system})
+    # messages.append({"role": "system", "content": system})
 
     # Call the OpenAI API to generate a response using the GPT-3.5-turbo model
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages,
-        # max_tokens=50,
-        n=1,
-        temperature=1,
-    )
+    # response = openai.ChatCompletion.create(
+    #     model="gpt-3.5-turbo",
+    #     messages=messages,
+    #     # max_tokens=50,
+    #     n=1,
+    #     temperature=1,
+    # )
 
     # Extract the generated AI message from the response
-    ai_message = response.choices[0].message["content"].strip()
+    # ai_message = response.choices[0].message["content"].strip()
+    ai_message = bard.get_answer(messages)['content']
 
     # Return the AI message as a JSON response
     return jsonify(ai_message)
