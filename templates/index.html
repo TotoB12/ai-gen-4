@@ -134,42 +134,42 @@
             background-color: #1e345b;
         }
 
-@keyframes typing {
-  0% {
-    opacity: 0;
-    width: 0;
-  }
-  20% {
-    opacity: 1;
-    width: 0;
-  }
-  80% {
-    opacity: 1;
-    width: 4px;
-  }
-  100% {
-    opacity: 0;
-    width: 0;
-  }
-}
-
-.dots-animation span {
-  display: inline-block;
-  animation: typing 2s infinite;
-  animation-timing-function: steps(4);
-}
-
-.dots-animation span:nth-child(1) {
-  animation-delay: 0s;
-}
-
-.dots-animation span:nth-child(2) {
-  animation-delay: 0.4s;
-}
-
-.dots-animation span:nth-child(3) {
-  animation-delay: 0.8s;
-}
+        @keyframes typing {
+          0% {
+            opacity: 0;
+            width: 0;
+          }
+          20% {
+            opacity: 1;
+            width: 0;
+          }
+          80% {
+            opacity: 1;
+            width: 4px;
+          }
+          100% {
+            opacity: 0;
+            width: 0;
+          }
+        }
+        
+        .dots-animation span {
+          display: inline-block;
+          animation: typing 2s infinite;
+          animation-timing-function: steps(4);
+        }
+        
+        .dots-animation span:nth-child(1) {
+          animation-delay: 0s;
+        }
+        
+        .dots-animation span:nth-child(2) {
+          animation-delay: 0.4s;
+        }
+        
+        .dots-animation span:nth-child(3) {
+          animation-delay: 0.8s;
+        }
 
         .generating-message .message-text {
           background-color: #ccc;
@@ -187,24 +187,24 @@
         <button type="button" id="clear-history">Clear History</button>
     </form>
     <script>
-document.addEventListener("DOMContentLoaded", function() {
+      document.addEventListener("DOMContentLoaded", function() {
         // Initialize an array to store the conversation history
         let conversationHistory = [];
 
         // Function to load the conversation history from localStorage
-function loadConversationHistory() {
-    const storedHistory = localStorage.getItem("conversationHistory");
-    if (storedHistory) {
-        conversationHistory = JSON.parse(storedHistory);
-        conversationHistory.forEach(message => {
-            // Use the addMessage function to display the messages with proper code snippet handling
-            addMessage(message.content, message.role === "user" ? "user" : "bot");
-        });
-    } else {
-        // Display the welcome message if there's no stored history
-        displayWelcomeMessage();
-    }
-}
+        function loadConversationHistory() {
+            const storedHistory = localStorage.getItem("conversationHistory");
+            if (storedHistory) {
+                conversationHistory = JSON.parse(storedHistory);
+                conversationHistory.forEach(message => {
+                    // Use the addMessage function to display the messages with proper code snippet handling
+                    addMessage(message.content, message.role === "user" ? "user" : "bot");
+                });
+            } else {
+                // Display the welcome message if there's no stored history
+                displayWelcomeMessage();
+            }
+        }
 
         function clearHistory() {
             // Clear the chat container
@@ -227,56 +227,54 @@ function loadConversationHistory() {
         }
 
         // Function to add a message to the chat container
-// Function to add a message to the chat container
-// Function to add a message to the chat container
-function addMessage(message, sender, additionalClass) {
-  const chatContainer = document.getElementById("chat-container");
-  const messageElement = document.createElement("div");
-  messageElement.className = `message ${sender}-message ${additionalClass}`;
-
-  const messageText = document.createElement("pre");
-  messageText.style.whiteSpace = "pre-wrap";
-  messageText.style.fontFamily = "'Roboto', sans-serif";
-  messageText.style.whiteSpace = "pre-wrap";
-  messageText.className = "message-text";
-
-  const codeSnippetRegex = /```(\w+)\n([\s\S]*?)\n```/g;
-  let lastIndex = 0;
-  let match;
-  while ((match = codeSnippetRegex.exec(message)) !== null) {
-    // Add the plain text before the code snippet
-    const plainText = message.substring(lastIndex, match.index);
-    const escapedText = plainText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    messageText.insertAdjacentHTML("beforeend", escapedText);
-
-    // Add the code snippet with syntax highlighting
-    const language = match[1];
-    const code = match[2];
-    const codeElement = document.createElement("code");
-    codeElement.className = language;
-    codeElement.textContent = code;
-
-    // Highlight the code using highlight.js
-    hljs.highlightElement(codeElement);
-
-    const codeContainer = document.createElement("pre");
-    codeContainer.appendChild(codeElement);
-    messageText.appendChild(codeContainer);
-
-    lastIndex = codeSnippetRegex.lastIndex;
-  }
-
-  // Add the remaining plain text after the last code snippet
-  const remainingText = message.substring(lastIndex);
-  const escapedRemainingText = remainingText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  messageText.insertAdjacentHTML("beforeend", escapedRemainingText);
-
-  messageElement.appendChild(messageText);
-  chatContainer.appendChild(messageElement);
-
-  // Scroll to the bottom of the chat container
-  chatContainer.scrollTop = chatContainer.scrollHeight;
-}
+        function addMessage(message, sender, additionalClass) {
+          const chatContainer = document.getElementById("chat-container");
+          const messageElement = document.createElement("div");
+          messageElement.className = `message ${sender}-message ${additionalClass}`;
+        
+          const messageText = document.createElement("pre");
+          messageText.style.whiteSpace = "pre-wrap";
+          messageText.style.fontFamily = "'Roboto', sans-serif";
+          messageText.style.whiteSpace = "pre-wrap";
+          messageText.className = "message-text";
+        
+          const codeSnippetRegex = /```(\w+)\n([\s\S]*?)\n```/g;
+          let lastIndex = 0;
+          let match;
+          while ((match = codeSnippetRegex.exec(message)) !== null) {
+            // Add the plain text before the code snippet
+            const plainText = message.substring(lastIndex, match.index);
+            const escapedText = plainText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            messageText.insertAdjacentHTML("beforeend", escapedText);
+        
+            // Add the code snippet with syntax highlighting
+            const language = match[1];
+            const code = match[2];
+            const codeElement = document.createElement("code");
+            codeElement.className = language;
+            codeElement.textContent = code;
+        
+            // Highlight the code using highlight.js
+            hljs.highlightElement(codeElement);
+        
+            const codeContainer = document.createElement("pre");
+            codeContainer.appendChild(codeElement);
+            messageText.appendChild(codeContainer);
+        
+            lastIndex = codeSnippetRegex.lastIndex;
+          }
+        
+          // Add the remaining plain text after the last code snippet
+          const remainingText = message.substring(lastIndex);
+          const escapedRemainingText = remainingText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          messageText.insertAdjacentHTML("beforeend", escapedRemainingText);
+        
+          messageElement.appendChild(messageText);
+          chatContainer.appendChild(messageElement);
+        
+          // Scroll to the bottom of the chat container
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
     
         // Function to display the welcome message from the bot
         function displayWelcomeMessage() {
@@ -285,29 +283,29 @@ function addMessage(message, sender, additionalClass) {
         }
     
         // Function to display a temporary "Generating response..." message from the bot
-function displayGeneratingMessage() {
-  const generatingMessage = "Generating response";
-  addMessage(generatingMessage, "bot", "generating-message");
-
-  // Add the typing animation for the dots
-  const dotsContainer = document.createElement("span");
-  dotsContainer.className = "dots-animation";
-  const dot1 = document.createElement("span");
-  dot1.textContent = ".";
-  const dot2 = document.createElement("span");
-  dot2.textContent = ".";
-  const dot3 = document.createElement("span");
-  dot3.textContent = ".";
-
-  dotsContainer.appendChild(dot1);
-  dotsContainer.appendChild(dot2);
-  dotsContainer.appendChild(dot3);
-
-  const messageElement = document.querySelector(".generating-message .message-text");
-  messageElement.appendChild(dotsContainer);
-
-  return generatingMessage;
-}
+        function displayGeneratingMessage() {
+          const generatingMessage = "Generating response";
+          addMessage(generatingMessage, "bot", "generating-message");
+        
+          // Add the typing animation for the dots
+          const dotsContainer = document.createElement("span");
+          dotsContainer.className = "dots-animation";
+          const dot1 = document.createElement("span");
+          dot1.textContent = ".";
+          const dot2 = document.createElement("span");
+          dot2.textContent = ".";
+          const dot3 = document.createElement("span");
+          dot3.textContent = ".";
+        
+          dotsContainer.appendChild(dot1);
+          dotsContainer.appendChild(dot2);
+          dotsContainer.appendChild(dot3);
+        
+          const messageElement = document.querySelector(".generating-message .message-text");
+          messageElement.appendChild(dotsContainer);
+        
+          return generatingMessage;
+        }
     
         // Function to remove the "Generating response..." message from the chat container
         function removeGeneratingMessage() {
@@ -352,19 +350,19 @@ function displayGeneratingMessage() {
                     "Accept": "application/json"
                 }
             })
-.then(response => response.json())
-.then(data => {
-  // Remove the "Generating response..." message
-  removeGeneratingMessage();
 
-  // Save the response to the conversation history
-  conversationHistory.push({ role: "assistant", content: data });
-  saveConversationHistory(); // Save the updated conversation history to localStorage
-
-  // Display the response message
-  addMessage(data, "bot");
-});
-
+          .then(response => response.json())
+          .then(data => {
+            // Remove the "Generating response..." message
+            removeGeneratingMessage();
+          
+            // Save the response to the conversation history
+            conversationHistory.push({ role: "assistant", content: data });
+            saveConversationHistory(); // Save the updated conversation history to localStorage
+          
+            // Display the response message
+            addMessage(data, "bot");
+          });
         });
 
         // Event listener for the "Clear History" button
@@ -413,7 +411,7 @@ function displayGeneratingMessage() {
         // Adjust the textarea height when the page loads
         adjustTextareaHeight(document.getElementById("message"));
 
-});
+      });
     </script>
     
 </body>
