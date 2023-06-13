@@ -10,7 +10,7 @@ load_dotenv()
 app = Flask(__name__)
 # Generate a random secret key for the Flask application
 app.secret_key = os.urandom(24)
-# Set the OpenAI API key from the environment variable
+# Set the Google Bard key from the environment variable
 token = os.environ['token']
 bard = Bard(token=token)
 # Read the content of the "system_card.txt" file
@@ -35,7 +35,7 @@ def generate():
 
     # Create a list of message dictionaries for the OpenAI API
     # messages = [{"role": msg["role"], "content": msg["content"]} for msg in history]
-    messages = str(history) + str(user_message)
+    messages = str(system) + str(history) + str(user_message)
     # Append the system message from the "system_card.txt" file
     # messages.append({"role": "system", "content": system})
 
