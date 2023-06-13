@@ -134,6 +134,10 @@
             background-color: #1e345b;
         }
 
+        .clear-history-button:hover {
+            background-color: #6f0c0d;
+        }
+
         @keyframes typing {
           0% {
             opacity: 0;
@@ -184,7 +188,7 @@
     <form id="chat-form">
         <textarea id="message" name="message" required placeholder="Type your message..." rows="1"></textarea>
         <button type="submit" style="margin-right: 7px;">Send</button>
-        <button type="button" id="clear-history">Clear History</button>
+        <button type="button" id="clear-history" class="clear-history-button">Clear History</button>
     </form>
     <script>
       document.addEventListener("DOMContentLoaded", function() {
