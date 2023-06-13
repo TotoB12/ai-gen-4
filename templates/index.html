@@ -73,7 +73,7 @@
 
         .message-text {
             background-color: #ffffff;
-            padding: 10px;
+            padding: 10px 16px;
             border-radius: 20px;
             max-width: 70%;
             line-height: 1.5;
@@ -188,45 +188,35 @@
     </form>
     <script>
       document.addEventListener("DOMContentLoaded", function() {
-        // Initialize an array to store the conversation history
         let conversationHistory = [];
 
-        // Function to load the conversation history from localStorage
         function loadConversationHistory() {
             const storedHistory = localStorage.getItem("conversationHistory");
             if (storedHistory) {
                 conversationHistory = JSON.parse(storedHistory);
                 conversationHistory.forEach(message => {
-                    // Use the addMessage function to display the messages with proper code snippet handling
                     addMessage(message.content, message.role === "user" ? "user" : "bot");
                 });
             } else {
-                // Display the welcome message if there's no stored history
                 displayWelcomeMessage();
             }
         }
 
         function clearHistory() {
-            // Clear the chat container
             const chatContainer = document.getElementById("chat-container");
             chatContainer.innerHTML = '';
 
-            // Clear the conversation history array
             conversationHistory = [];
 
-            // Clear the conversation history from localStorage
             localStorage.removeItem("conversationHistory");
 
-            // Display the welcome message again
             displayWelcomeMessage();
         }
 
-        // Function to save the conversation history to localStorage
         function saveConversationHistory() {
             localStorage.setItem("conversationHistory", JSON.stringify(conversationHistory));
         }
 
-        // Function to add a message to the chat container
         function addMessage(message, sender, additionalClass) {
           const chatContainer = document.getElementById("chat-container");
           const messageElement = document.createElement("div");
@@ -242,19 +232,16 @@
           let lastIndex = 0;
           let match;
           while ((match = codeSnippetRegex.exec(message)) !== null) {
-            // Add the plain text before the code snippet
             const plainText = message.substring(lastIndex, match.index);
             const escapedText = plainText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
             messageText.insertAdjacentHTML("beforeend", escapedText);
         
-            // Add the code snippet with syntax highlighting
             const language = match[1];
             const code = match[2];
             const codeElement = document.createElement("code");
             codeElement.className = language;
             codeElement.textContent = code;
         
-            // Highlight the code using highlight.js
             hljs.highlightElement(codeElement);
         
             const codeContainer = document.createElement("pre");
@@ -264,7 +251,6 @@
             lastIndex = codeSnippetRegex.lastIndex;
           }
         
-          // Add the remaining plain text after the last code snippet
           const remainingText = message.substring(lastIndex);
           const escapedRemainingText = remainingText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
           messageText.insertAdjacentHTML("beforeend", escapedRemainingText);
@@ -272,22 +258,18 @@
           messageElement.appendChild(messageText);
           chatContainer.appendChild(messageElement);
         
-          // Scroll to the bottom of the chat container
           chatContainer.scrollTop = chatContainer.scrollHeight;
         }
     
-        // Function to display the welcome message from the bot
         function displayWelcomeMessage() {
             const welcomeMessage = "Hello! I'm TotoB12. How can I help you today?";
             addMessage(welcomeMessage, "bot");
         }
     
-        // Function to display a temporary "Generating response..." message from the bot
         function displayGeneratingMessage() {
           const generatingMessage = "Generating response";
           addMessage(generatingMessage, "bot", "generating-message");
         
-          // Add the typing animation for the dots
           const dotsContainer = document.createElement("span");
           dotsContainer.className = "dots-animation";
           const dot1 = document.createElement("span");
@@ -307,7 +289,6 @@
           return generatingMessage;
         }
     
-        // Function to remove the "Generating response..." message from the chat container
         function removeGeneratingMessage() {
           const chatContainer = document.getElementById("chat-container");
           const generatingMessageElement = chatContainer.querySelector(".generating-message");
@@ -316,32 +297,27 @@
           }
         }
     
-        // Event listener for the form submission
         document.getElementById("chat-form").addEventListener("submit", function(event) {
             event.preventDefault();
 
             const input = document.getElementById("message");
             const message = input.value.trim();
 
-            // Do not proceed if the message is empty
             if (message.length === 0) {
                 return;
             }
 
-            // Display the user's message and update the conversation history
             addMessage(message, "user");
             conversationHistory.push({ role: "user", content: message });
-            saveConversationHistory(); // Save the updated conversation history to localStorage
+            saveConversationHistory();
 
             input.value = "";
             input.style.height = "";
             input.focus();
 
-            // Display the "Generating response..." message
             const generatingMessage = displayGeneratingMessage();
             const additionalClass = (generatingMessage === "Generating response...") ? "generating-message" : "";
 
-            // Send a request to the server to generate a response
             fetch("/generate", {
                 method: "POST",
                 body: JSON.stringify({ message: message, history: conversationHistory }),
@@ -353,32 +329,25 @@
 
           .then(response => response.json())
           .then(data => {
-            // Remove the "Generating response..." message
             removeGeneratingMessage();
           
-            // Save the response to the conversation history
             conversationHistory.push({ role: "assistant", content: data });
-            saveConversationHistory(); // Save the updated conversation history to localStorage
+            saveConversationHistory();
           
-            // Display the response message
             addMessage(data, "bot");
           });
         });
 
-        // Event listener for the "Clear History" button
         document.getElementById("clear-history").addEventListener("click", function() {
             clearHistory();
         });
 
-        // Function to adjust the textarea height based on its content
-
         function adjustTextareaHeight(textarea) {
-            textarea.style.height = "auto"; // Reset the height to auto
-            const maxHeight = window.innerHeight * 0.3; // Calculate the maximum height (30% of the screen height)
-            const newHeight = Math.min(textarea.scrollHeight, maxHeight); // Calculate the new height
-            textarea.style.height = newHeight + "px"; // Set the height to the new height
+            textarea.style.height = "auto";
+            const maxHeight = window.innerHeight * 0.3;
+            const newHeight = Math.min(textarea.scrollHeight, maxHeight);
+            textarea.style.height = newHeight + "px";
         
-            // Reset the height to its default size if the content is empty or only one line
             if (textarea.value.trim().length === 0 || textarea.value.split("\n").length === 1) {
                 textarea.style.height = "";
             }
@@ -387,17 +356,11 @@
         document.getElementById("message").addEventListener("blur", function() {
           adjustTextareaHeight(this);
       });
-
-        // Event listener for the textarea input event
         document.getElementById("message").addEventListener("input", function() {
             adjustTextareaHeight(this);
         });
-
-        // Event listener for the textarea keydown event
         document.getElementById("message").addEventListener("keydown", function(event) {
-            // If the Enter key is pressed
             if (event.key === "Enter") {
-                // If the Shift key is not pressed, submit the form
                 if (!event.shiftKey) {
                     event.preventDefault();
                     document.getElementById("chat-form").dispatchEvent(new Event("submit"));
@@ -405,10 +368,8 @@
             }
         });
 
-        // Load the conversation history when the page loads
         loadConversationHistory();
 
-        // Adjust the textarea height when the page loads
         adjustTextareaHeight(document.getElementById("message"));
 
       });
