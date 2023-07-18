@@ -260,6 +260,7 @@
           </button>
         </div>
         <textarea id="message" name="message" required placeholder="Type your message..." rows="1"></textarea>
+        <input type="file" name="file" id='file'></input>
         <button type="submit" style="margin-right: 7px;">Send</button>
     </form>
   <!-- <hide style="visibility: hidden;">
@@ -358,6 +359,7 @@
         document.getElementById("chat-form").addEventListener("submit", function(event) {
             event.preventDefault();
             const input = document.getElementById("message");
+            const file = document.getElementById("file");
             const message = input.value.trim();
             if (message.length === 0) {
                 return;
@@ -370,9 +372,13 @@
             input.focus();
             const generatingMessage = displayGeneratingMessage();
             const additionalClass = (generatingMessage === "Generating response...") ? "generating-message" : "";
+            // const formData = new FormData();
+            // formData.append("message", message);
+            // formData.append("history", conversationHistory);
+            // formData.append("file", fileInput.files[0]);
             fetch("/generate", {
                 method: "POST",
-                body: JSON.stringify({ message: message, history: conversationHistory }),
+                body: JSON.stringify({ message: message, history: conversationHistory, file: fileInput.files }),
                 headers: {
                     "Content-Type": "application/json",
                     "Accept": "application/json"

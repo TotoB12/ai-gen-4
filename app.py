@@ -3,12 +3,14 @@ from bardapi import Bard
 from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request, session
 
-load_dotenv()
-
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 token = os.environ['token']
-bard = Bard(token=token)
+
+def trim_data(data):
+    if len(data) > 5000:
+        data = data[:5000]
+    return data
 
 with open("system_card.txt", "r") as file:
     system = file.read()
@@ -19,8 +21,18 @@ def index():
 
 @app.route("/generate", methods=["POST"])
 def generate():
+    bard = Bard(token=token)
     data = request.get_json()
-    messages = str(system) + str(data["history"]) + str(data["message"])
+    print(data)
+    conversation = str(data["history"]) + str(data["message"])
+    messages = str(system) + trim_data(conversation)
+  
+    file = data["file"]
+    print(file)
+    # file = open(file)
+    # filename = file.filename
+    # file.save('files/' + filename)
+  
     ai_message = bard.get_answer(messages)['content']
     return jsonify(ai_message)
 
