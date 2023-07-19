@@ -8,248 +8,13 @@
     <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/TotoB12/totob12.github.io/main/things/favicon.ico">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css">
     <link rel="stylesheet" href="https://highlightjs.org/static/demo/styles/atom-one-dark.css">
-    <style>
-        :root {
-          color-scheme: light only;
-          
-          --bg: #1a1d21;
-          --lightbg: #292d33;
-          --lighterbg: #3b3f45;
-        
-          --babyblue: #C3E0E5;
-          --lightblue: #5885AF;
-          --darkblue: #41729F;
-          --blackblue: #274472;
-          --blackblueOpacity: rgba(39, 68, 114, 0.5); 
-          --blackbluedark: #1d3258;
-        
-          --orange: rgb(255,165,0);
-          --dark-orange: rgb(255,131,0);
-          --red: #a80000;
-          --darkred: rgba(168, 0, 0, 0.6);
-          --green: #00b050;
-        }
-        body, input, textarea {
-            font-family: 'Roboto', sans-serif;
-        }
-        * {
-          box-sizing: border-box;
-        }
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--bg);;
-        }
-        h1 {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--babyblue);
-            font-family: 'Montserrat', sans-serif;
-            text-align: center;
-            font-weight: 500;
-            margin: 16px;
-            color: #ffffff;
-        }
-        h1 > img {
-          width: 80%;
-          max-width: 300px;
-        }
-        #chat-container {
-            flex: 1;
-            margin: 0 auto;
-            background-color: var(--bg);
-            padding: 16px;
-            overflow: auto;
-            max-width: 100%;
-            width: 100%;
-            box-sizing: border-box;
-            padding-bottom: 100px;
-        }
-        .message {
-            display: flex;
-            margin-bottom: 10px;
-            font-size: 16px;
-            opacity: 0;
-            animation: fadeIn 0.5s forwards;
-        }
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-            }
-            100% {
-                opacity: 1;
-            }
-        }
-        .user-message {
-            justify-content: flex-end;
-        }
-        .bot-message, .system-message {
-            justify-content: flex-start;
-        }
-        .message-text {
-            background-color: hsl(0, 0%, 95%);
-            padding: 12px 20px;
-            border-radius: 30px 30px 30px 0;
-            max-width: 50%;
-            line-height: 1.5;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        @media only screen and (max-width: 1440px) {
-          .message-text {
-            max-width: 70%;
-          }
-        }
-        @media only screen and (max-width: 767px) {
-          .message-text {
-            max-width: 100%;
-          }
-        }
-        .user-message .message-text {
-            background-color: var(--darkblue);
-            border-radius: 30px 30px 0 30px;
-            color: #ffffff;
-        }
-        .system-message .message-text {
-            background-color: transparent;
-            color: #666;
-            font-style: italic;
-            border: none;
-        }
-        #chat-form {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin: 0 auto;
-            padding: 16px;
-            max-width: 100%;
-            width: 100%;
-            box-sizing: border-box;
-            background-color: #2b2b2b;
-        }
-        #message {
-            flex: 1;
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 20px;
-            border: none;
-            outline: none;
-            background-color: #3a3a3a;
-            color: #ffffff;
-            resize: none;
-            overflow-y: auto;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 20px;
-            border: none;
-            background-color: var(--darkblue);
-            color: #ffffff;
-            cursor: pointer;
-            outline: none;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #1e345b;
-        }
-        .clear-history-container {
-          position: absolute;
-          top: 0;
-          transform: translateY(-200%);
-          display: flex;
-          justify-content: center;
-          margin: 20px 0;
-        }
-        .clear-history-button {
-            background-color: hsl(0, 0%, 17%);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: hsl(0, 0%, 70%);
-            font-size: 14px;
-        }
-        .clear-history-button span {
-            font-size: 20px;
-        }
-        .clear-history-button:hover {
-            background-color: hsl(0, 0%, 20%);
-        }
-        @keyframes typing {
-          0% {
-            opacity: 0;
-          }
-          50% {
-            opacity: 1;
-          }
-          100% {
-            opacity: 0;
-          }
-        }
-        .dots-animation span {
-          display: inline-block;
-          animation: typing 2s infinite;
-          font-size: 18px;
-          animation-timing-function: steps(4);
-        }
-        .dots-animation span:nth-child(1) {
-          animation-delay: 0s;
-        }
-        .dots-animation span:nth-child(2) {
-          animation-delay: 0.4s;
-        }
-        .dots-animation span:nth-child(3) {
-          animation-delay: 0.8s;
-        }
-        .generating-message .message-text {
-          background-color: hsl(0, 0%, 20%);
-          color: hsl(0, 0%, 60%);
-        }
-        .code {
-          border-radius: 20px;
-          border: 2px solid grey;
-        }
-
-        /*-------- SCROLLBAR --------*/
-
-        /* width */
-        ::-webkit-scrollbar {
-          width: 10px;
-          height: 10px;
-          border: none;
-          border-radius: 20px;
-        }
-        
-        /* Track */
-        ::-webkit-scrollbar-track {
-          border-radius: 20px;
-          background: transparent; 
-          border: none;
-          z-index: -1;
-        }
-         
-        /* Handle */
-        ::-webkit-scrollbar-thumb {
-          background: var(--darkblue); 
-          border-radius: 6px;
-        }
-        
-        /* Handle on hover */
-        ::-webkit-scrollbar-thumb:hover {
-          background: var(--lightblue); 
-          cursor: move;
-        }
-    </style>
+    <link rel="stylesheet" href="static/style.css">
 </head>
+  
 <body>
     <h1><img onclick='window.open("https://totob12.github.io/", "_blank")' src='static/gen-4-totob12-title.svg' alt='totob12 logo'></h1>
     <div id="chat-container"></div>
@@ -260,7 +25,6 @@
           </button>
         </div>
         <textarea id="message" name="message" required placeholder="Type your message..." rows="1"></textarea>
-        <input type="file" name="file" id='file'></input>
         <button type="submit" style="margin-right: 7px;">Send</button>
     </form>
   <!-- <hide style="visibility: hidden;">
@@ -292,41 +56,47 @@
         function saveConversationHistory() {
             localStorage.setItem("conversationHistory", JSON.stringify(conversationHistory));
         }
-        function addMessage(message, sender, additionalClass) {
-          const chatContainer = document.getElementById("chat-container");
-          const messageElement = document.createElement("div");
-          messageElement.className = `message ${sender}-message ${additionalClass}`;
-          const messageText = document.createElement("pre");
-          messageText.style.whiteSpace = "pre-wrap";
-          messageText.style.fontFamily = "'Roboto', sans-serif";
-          messageText.style.whiteSpace = "pre-wrap";
-          messageText.className = "message-text";
-          const codeSnippetRegex = /```(\w+)\n([\s\S]*?)\n```/g;
-          let lastIndex = 0;
-          let match;
-          while ((match = codeSnippetRegex.exec(message)) !== null) {
-            const plainText = message.substring(lastIndex, match.index);
-            const escapedText = plainText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            messageText.insertAdjacentHTML("beforeend", escapedText);
-            const language = match[1];
-            const code = match[2];
-            const codeElement = document.createElement("code");
-            codeElement.className = language;
-            codeElement.classList.add('code');
-            codeElement.textContent = code;
-            hljs.highlightElement(codeElement);
-            const codeContainer = document.createElement("pre");
-            codeContainer.appendChild(codeElement);
-            messageText.appendChild(codeContainer);
-            lastIndex = codeSnippetRegex.lastIndex;
-          }
-          const remainingText = message.substring(lastIndex);
-          const escapedRemainingText = remainingText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-          messageText.insertAdjacentHTML("beforeend", escapedRemainingText);
-          messageElement.appendChild(messageText);
-          chatContainer.appendChild(messageElement);
-          chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
+
+        
+  function addMessage(message, sender, additionalClass) {
+    const chatContainer = document.getElementById("chat-container");
+    const messageElement = document.createElement("div");
+    messageElement.className = `message ${sender}-message ${additionalClass}`;
+    const messageText = document.createElement("pre");
+    messageText.style.whiteSpace = "pre-wrap";
+    messageText.style.fontFamily = "'Roboto', sans-serif";
+    messageText.style.whiteSpace = "pre-wrap";
+    messageText.className = "message-text";
+
+    const imageRegex = /\[(.*?)\]/g;
+    let lastIndex = 0;
+    let match;
+    while ((match = imageRegex.exec(message)) !== null) {
+      const plainText = message.substring(lastIndex, match.index);
+      const escapedText = plainText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      messageText.insertAdjacentHTML("beforeend", escapedText);
+
+      const imageLink = match[1];
+      const imageElement = document.createElement("img");
+      imageElement.src = imageLink;
+      imageElement.style.maxWidth = "100%";
+      imageElement.style.height = "auto";
+      const imageContainer = document.createElement("div");
+      imageContainer.className = "image-container";
+      imageContainer.appendChild(imageElement);
+      messageText.appendChild(imageContainer);
+
+      lastIndex = imageRegex.lastIndex;
+    }
+
+    const remainingText = message.substring(lastIndex);
+    const escapedRemainingText = remainingText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    messageText.insertAdjacentHTML("beforeend", escapedRemainingText);
+    messageElement.appendChild(messageText);
+    chatContainer.appendChild(messageElement);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+        
         function displayWelcomeMessage() {
             const welcomeMessage = "Hello! I'm TotoB12. How can I help you today?";
             addMessage(welcomeMessage, "bot");
@@ -359,7 +129,6 @@
         document.getElementById("chat-form").addEventListener("submit", function(event) {
             event.preventDefault();
             const input = document.getElementById("message");
-            const file = document.getElementById("file");
             const message = input.value.trim();
             if (message.length === 0) {
                 return;
@@ -372,13 +141,9 @@
             input.focus();
             const generatingMessage = displayGeneratingMessage();
             const additionalClass = (generatingMessage === "Generating response...") ? "generating-message" : "";
-            // const formData = new FormData();
-            // formData.append("message", message);
-            // formData.append("history", conversationHistory);
-            // formData.append("file", fileInput.files[0]);
             fetch("/generate", {
                 method: "POST",
-                body: JSON.stringify({ message: message, history: conversationHistory, file: fileInput.files }),
+                body: JSON.stringify({ message: message, history: conversationHistory }),
                 headers: {
                     "Content-Type": "application/json",
                     "Accept": "application/json"

@@ -1,0 +1,61 @@
+<script>
+const chatContainer = document.getElementById("chat-container");
+    const messageElement = document.createElement("div");
+    messageElement.className = `message ${sender}-message ${additionalClass}`;
+
+    const imageRegex = /\[(.*?)\]/g;
+    let lastIndex = 0;
+    let match;
+    
+    let messageText = document.createElement("pre");
+    messageText.style.whiteSpace = "pre-wrap";
+    messageText.style.fontFamily = "'Roboto', sans-serif";
+    messageText.style.whiteSpace = "pre-wrap";
+    messageText.className = "message-text";
+    
+    while ((match = imageRegex.exec(message)) !== null) {
+      const plainText = message.substring(lastIndex, match.index);
+      const escapedText = plainText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      messageText.insertAdjacentHTML("beforeend", escapedText);
+
+      const imageLink = match[1];
+      const imageElement = document.createElement("img");
+      imageElement.src = imageLink;
+      imageElement.style.maxWidth = "37%";
+      imageElement.style.height = "auto";
+      imageElement.style.maxHeight = "77%";
+      const imageContainer = document.createElement("div");
+      imageContainer.className = "image-container";
+      imageContainer.appendChild(imageElement);
+      messageText.appendChild(imageContainer);
+
+      lastIndex = imageRegex.lastIndex;
+    }
+    
+    const codeSnippetRegex = /```(\w+)\n([\s\S]*?)\n```/g;
+    lastIndex = 0;
+    
+    while ((match = codeSnippetRegex.exec(message)) !== null) {
+      const plainText = message.substring(lastIndex, match.index);
+      const escapedText = plainText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      messageText.insertAdjacentHTML("beforeend", escapedText);
+      const language = match[1];
+      const code = match[2];
+      const codeElement = document.createElement("code");
+      codeElement.className = language;
+      codeElement.classList.add('code');
+      codeElement.textContent = code;
+      hljs.highlightElement(codeElement);
+      const codeContainer = document.createElement("pre");
+      codeContainer.appendChild(codeElement);
+      messageText.appendChild(codeContainer);
+      lastIndex = codeSnippetRegex.lastIndex;
+    }
+    
+    const remainingText = message.substring(lastIndex);
+    const escapedRemainingText = remainingText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    messageText.insertAdjacentHTML("beforeend", escapedRemainingText);
+    
+    messageElement.appendChild(messageText);
+    chatContainer.appendChild(messageElement);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
