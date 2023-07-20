@@ -1,3 +1,18 @@
+const fileInput = document.getElementById("image");
+const imageLabel = document.getElementById("imageLabel");
+
+// Add an event listener to the file input
+fileInput.addEventListener("change", () => {
+  // Check if a file is selected
+  if (fileInput.files.length > 0) {
+    // Add the "file-selected" class to the label
+    imageLabel.classList.add("file-selected");
+  } else {
+    // If no file is selected, remove the "file-selected" class
+    imageLabel.classList.remove("file-selected");
+  }
+});
+
 function redirectToImage() {
   var imageSource = this.src;
   window.open(imageSource, '_blank')
@@ -173,6 +188,8 @@ document.getElementById("chat-form").addEventListener("submit", function(event) 
     addMessage(message, "user");
     conversationHistory.push({ role: "user", content: message });
     saveConversationHistory();
+    document.getElementById("image").value = null;
+    imageLabel.classList.remove("file-selected");
     input.value = "";
     input.style.height = "";
     input.focus();

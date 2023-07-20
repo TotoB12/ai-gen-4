@@ -77,7 +77,7 @@ def generate():
                     print(image_link)
                     # image_url = 'https://i.imgur.com/lA700ke.jpg'
                     image = open(path, 'rb').read()
-                    ai_gen = bard.ask_about_image('What is in the image?', image)
+                    ai_gen = bard.ask_about_image(message, image)
                     ai_message = "[" + image_link + "]\n\n" + ai_gen['content']
                     print(ai_gen)
                     clear()
