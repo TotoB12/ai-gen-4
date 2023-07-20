@@ -1,4 +1,3 @@
-
 function redirectToImage() {
   var imageSource = this.src;
   window.open(imageSource, '_blank')
@@ -147,8 +146,29 @@ document.getElementById("chat-form").addEventListener("submit", function(event) 
     event.preventDefault();
     const input = document.getElementById("message");
     const message = input.value.trim();
-    if (message.length === 0) {
+    const image = document.getElementById("image").files[0];
+    if (message.length === 0 && !image) {
         return;
+    }
+    let fetchOptions;
+    if (image) {
+        let formData = new FormData();
+        formData.append("message", message);
+        formData.append("history", JSON.stringify(conversationHistory));
+        formData.append("image", image);
+        fetchOptions = {
+            method: "POST",
+            body: formData
+        };
+    } else {
+        fetchOptions = {
+            method: "POST",
+            body: JSON.stringify({ message: message, history: conversationHistory }),
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
     }
     addMessage(message, "user");
     conversationHistory.push({ role: "user", content: message });
@@ -158,14 +178,7 @@ document.getElementById("chat-form").addEventListener("submit", function(event) 
     input.focus();
     const generatingMessage = displayGeneratingMessage();
     const additionalClass = (generatingMessage === "Generating response...") ? "generating-message" : "";
-    fetch("/generate", {
-        method: "POST",
-        body: JSON.stringify({ message: message, history: conversationHistory }),
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-        }
-    })
+    fetch("/generate", fetchOptions)
   .then(response => response.json())
   .then(data => {
     removeGeneratingMessage();

@@ -22,13 +22,14 @@
   
     <div id="chat-container"></div>
   
-    <form id="chat-form">
+    <form id="chat-form" enctype="multipart/form-data">
         <div class='clear-history-container'>
           <button type="button" id="clear-history" class="clear-history-button">
             <span class="material-symbols-outlined">autorenew</span>Clear history
           </button>
         </div>
         <textarea id="message" name="message" required placeholder="Type your message..." rows="1"></textarea>
+        <input type="file" id="image" name="image" accept="image/*">
         <button type="submit" style="margin-right: 7px;">Send</button>
     </form>
   

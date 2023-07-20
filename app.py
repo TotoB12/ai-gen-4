@@ -6,11 +6,26 @@ from PIL import Image
 import numpy as np
 import urllib.request
 import imageio
+import random
+import base64
+import requests
+import json
+import os, shutil
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-token = os.environ['token']
-cutoff = 0.35
+
+folder = 'img'
+def clear():
+  for filename in os.listdir(folder):
+      file_path = os.path.join(folder, filename)
+      try:
+          if os.path.isfile(file_path) or os.path.islink(file_path):
+              os.unlink(file_path)
+          elif os.path.isdir(file_path):
+              shutil.rmtree(file_path)
+      except Exception as e:
+          print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 def trim_data(data):
     if len(data) > 5000:
@@ -26,18 +41,51 @@ def index():
 
 @app.route("/generate", methods=["POST"])
 def generate():
+    # token = os.environ[random.choice(['token', 'token1'])]
+    token = os.environ['token1']
     bard = Bard(token=token)
-    data = request.get_json()
-    # print(data)
-    conversation = str(data["history"]) + str(data["message"])
-    messages = str(system) + trim_data(conversation)
+    if request.content_type == 'application/json':
+        data = request.get_json()
+        conversation = str(data["history"]) + str(data["message"])
+        # print(data)
+        conversation = str(data["history"]) + str(data["message"])
+        messages = str(system) + trim_data(conversation)
+      
+        ai_gen = bard.get_answer(messages)
+      
+        ai_message = ai_gen['content']
+  
+    elif request.content_type.startswith('multipart/form-data'):
+        message = request.form['message']
+        history = json.loads(request.form['history'])
+        conversation = str(history) + str(message)
+        messages = str(system) + trim_data(conversation)
+        if 'image' in request.files:
+            image = request.files['image']
+            if image.filename != '':
+                path = os.path.join('img', "image_" + str(random.randint(0, 1000)) + ".jpg")
+                image.save(path)
+                url = "https://api.imgur.com/3/image"
+                headers = {
+                  'Authorization': 'Client-ID ' + os.environ['imgur']
+                }
+                with open(path, 'rb') as img:
+                    payload={'image': base64.b64encode(img.read())}
+                    response = requests.request("POST", url, headers=headers, data=payload)
+                    image_data = json.loads(response.text)
+                    image_link = image_data['data']['link']
+                    print(image_link)
+                    # image_url = 'https://i.imgur.com/lA700ke.jpg'
+                    image = open(path, 'rb').read()
+                    ai_gen = bard.ask_about_image('What is in the image?', image)
+                    ai_message = "[" + image_link + "]\n\n" + ai_gen['content']
+                    print(ai_gen)
+                    clear()
+    else:
+        return "Unsupported Media Type", 415
 
-    ai_gen = bard.get_answer(messages)
 
-    ai_message = ai_gen['content']
-
-    if ai_gen["images"]:
-
+    if ai_gen["images"] and any(image.strip() for image in ai_gen["images"]):
         images = ai_gen["images"]
         link_list = ai_gen["links"]
         links = [link for link in link_list if "https://lh3.googleusercontent.com/" in link or "http://t0.gstatic.com/" in link]
