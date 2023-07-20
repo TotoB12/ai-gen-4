@@ -1,7 +1,7 @@
 :root {
   color-scheme: light only;
   
-  --bg: #1a1d21;
+  --bg: #1B1E22;
   --lightbg: #292d33;
   --lighterbg: #3b3f45;
 
@@ -17,47 +17,65 @@
   --red: #a80000;
   --darkred: rgba(168, 0, 0, 0.6);
   --green: #00b050;
+
+  --navHeight: 70px;
 }
+
 body, input, textarea {
-    font-family: 'Roboto', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
+
 * {
   box-sizing: border-box;
 }
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background-color: var(--bg);;
+
+html {
+  width: 100%; height: 100%;
+  margin: 0; padding: 0;
 }
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background-color: var(--bg);;
+}
+
 h1 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--babyblue);
-    font-family: 'Montserrat', sans-serif;
-    text-align: center;
-    font-weight: 500;
-    margin: 16px;
-    color: #ffffff;
+  position: fixed;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: var(--navHeight);
+  margin: 0;
+  padding: 5px;
+  background: rgba(27, 30, 34, 0.6);
+  backdrop-filter: blur(10px);
 }
+
 h1 > img {
-  width: 80%;
-  max-width: 300px;
+  height: 100%;
 }
+
+/* ---- ---- ---- CHAT CONTAINER ---- ---- ---- */
+
 #chat-container {
-    flex: 1;
-    margin: 0 auto;
-    background-color: var(--bg);
-    padding: 16px;
-    overflow: auto;
-    max-width: 100%;
-    width: 100%;
-    box-sizing: border-box;
-    padding-bottom: 100px;
+  flex: 1;
+  margin: 0;
+  margin-top: var(--navHeight);
+  background-color: var(--bg);
+  padding: 0 20px;
+  overflow: auto;
+  max-width: 100%;
+  width: 100%;
+  padding-bottom: 100px;
 }
+
 .message {
     display: flex;
     margin-bottom: 10px;
@@ -65,6 +83,7 @@ h1 > img {
     opacity: 0;
     animation: fadeIn 0.5s forwards;
 }
+
 @keyframes fadeIn {
     0% {
         opacity: 0;
@@ -73,43 +92,55 @@ h1 > img {
         opacity: 1;
     }
 }
+
 .user-message {
     justify-content: flex-end;
 }
+
 .bot-message, .system-message {
     justify-content: flex-start;
 }
+
 .message-text {
     background-color: hsl(0, 0%, 95%);
     padding: 12px 20px;
     border-radius: 30px 30px 30px 0;
+    word-wrap: break-word;
     max-width: 50%;
     line-height: 1.5;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
 @media only screen and (max-width: 1440px) {
   .message-text {
     max-width: 70%;
   }
 }
+
 @media only screen and (max-width: 767px) {
   .message-text {
     max-width: 100%;
   }
 }
+
 .user-message .message-text {
     background-color: var(--darkblue);
     border-radius: 30px 30px 0 30px;
     color: #ffffff;
 }
+
 .system-message .message-text {
     background-color: transparent;
     color: #666;
     font-style: italic;
     border: none;
 }
+
+/* ---- ---- ---- CHAT FORM ---- ---- ---- */
+
 #chat-form {
-    position: relative;
+    position: fixed;
+    bottom: 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -121,6 +152,7 @@ h1 > img {
     box-sizing: border-box;
     background-color: #2b2b2b;
 }
+
 #message {
     flex: 1;
     padding: 10px;
@@ -133,6 +165,7 @@ h1 > img {
     resize: none;
     overflow-y: auto;
 }
+
 button {
     padding: 10px 20px;
     font-size: 16px;
@@ -144,9 +177,11 @@ button {
     outline: none;
     transition: background-color 0.3s;
 }
+
 button:hover {
     background-color: #1e345b;
 }
+
 .clear-history-container {
   position: absolute;
   top: 0;
@@ -155,6 +190,7 @@ button:hover {
   justify-content: center;
   margin: 20px 0;
 }
+
 .clear-history-button {
     background-color: hsl(0, 0%, 17%);
     display: flex;
@@ -163,12 +199,15 @@ button:hover {
     color: hsl(0, 0%, 70%);
     font-size: 14px;
 }
+
 .clear-history-button span {
     font-size: 20px;
 }
+
 .clear-history-button:hover {
     background-color: hsl(0, 0%, 20%);
 }
+
 @keyframes typing {
   0% {
     opacity: 0;
@@ -180,25 +219,31 @@ button:hover {
     opacity: 0;
   }
 }
+
 .dots-animation span {
   display: inline-block;
   animation: typing 2s infinite;
   font-size: 18px;
   animation-timing-function: steps(4);
 }
+
 .dots-animation span:nth-child(1) {
   animation-delay: 0s;
 }
+
 .dots-animation span:nth-child(2) {
   animation-delay: 0.4s;
 }
+
 .dots-animation span:nth-child(3) {
   animation-delay: 0.8s;
 }
+
 .generating-message .message-text {
   background-color: hsl(0, 0%, 20%);
   color: hsl(0, 0%, 60%);
 }
+
 .code {
   border-radius: 20px;
   border: 2px solid grey;
@@ -217,7 +262,7 @@ button:hover {
 /* Track */
 ::-webkit-scrollbar-track {
   border-radius: 20px;
-  background: transparent; 
+  background: var(--lightbg); 
   border: none;
   z-index: -1;
 }
