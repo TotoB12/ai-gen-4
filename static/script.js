@@ -3,7 +3,17 @@ const imageLabel = document.getElementById("imageLabel");
 
 fileInput.addEventListener("change", () => {
   if (fileInput.files.length > 0) {
-    imageLabel.classList.add("file-selected");
+    const file = fileInput.files[0];
+    const maxSizeInBytes = 10 * 1024 * 1024;
+    
+    if (file.size > maxSizeInBytes) {
+      alert("File size exceeds the allowed limit of 10MB. Please select a smaller file.");
+      
+      fileInput.value = null;
+      imageLabel.classList.remove("file-selected");
+    } else {
+      imageLabel.classList.add("file-selected");
+    }
   } else {
     imageLabel.classList.remove("file-selected");
   }
@@ -42,10 +52,12 @@ async function uploadImageToImgur(imageFile) {
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            console.log(data.data.link)
+            console.log(data.data.link);
             return data.data.link;
           } else {
-            throw new Error("Failed to upload image to Imgur.");
+            const errorReason = data.data ? data.data.error : "Unknown error";
+            console.error("Failed to upload image to Imgur. Reason:", errorReason);
+            throw new Error("Failed to upload image to Imgur. Reason: " + errorReason);
           }
         })
         .catch(error => {
@@ -58,7 +70,6 @@ async function uploadImageToImgur(imageFile) {
       return null;
     });
 }
-
 
 function redirectToImage() {
   var imageSource = this.src;
@@ -217,11 +228,17 @@ document.getElementById("chat-form").addEventListener("submit", async function(e
         return;
     }
     let fetchOptions;
-    let imageUrl; // Declare imageUrl here
+    let imageUrl;
+
+  document.getElementById("image").value = null;
+  imageLabel.classList.remove("file-selected");
+  input.value = "";
+  input.style.height = "";
+  input.focus();
 
     if (image) {
         try {
-            imageUrl = await uploadImageToImgur(image); // Wait for imageUrl
+            imageUrl = await uploadImageToImgur(image);
         } catch (error) {
             console.error("Error uploading image:", error);
         }

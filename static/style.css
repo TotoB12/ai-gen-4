@@ -2,8 +2,12 @@
   color-scheme: light only;
   
   --bg: #1B1E22;
+  --bgTransparent: rgba(27, 30, 34, 0.5)
   --lightbg: #292d33;
   --lighterbg: #3b3f45;
+
+  --gray: #a2a7ae;
+  --lightGray: #cbced2;
 
   --babyblue: #C3E0E5;
   --lightblue: #5885AF;
@@ -143,102 +147,146 @@ h1 > img {
 /* ---- ---- ---- CHAT FORM ---- ---- ---- */
 
 #chat-form {
-    position: fixed;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin: 0 auto;
-    padding: 16px;
-    max-width: 100%;
-    width: 100%;
-    box-sizing: border-box;
-    background-color: #2b2b2b;
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 0 auto;
+  padding: 16px;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  backdrop-filter: blur(20px);
+}
+
+.opacity-mask {
+  position: absolute;
+  z-index: -2;
+  opacity: 0.8;
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  width: 100%;
 }
 
 #message {
-    flex: 1;
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 20px;
-    border: none;
-    outline: none;
-    background-color: #3a3a3a;
-    color: #ffffff;
-    resize: none;
-    overflow-y: auto;
+  flex: 1;
+  padding: 12px 14px;
+  padding-right: 40px;
+  font-size: 16px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  background-color: hsl(0, 0%, 23%);
+  color: #ffffff;
+  resize: none;
+  overflow-y: auto;
 }
 
 #image {
-    /* Remove default styles for file input */
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    outline: none;
-    border: none;
-    background: none;
-    padding: 0;
-    margin: 0;
-    cursor: pointer;
-    display: none; /* Hide the actual file input */
+  /* Remove default styles for file input */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline: none;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: none; /* Hide the actual file input */
 }
 
-#imageLabel {
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 20px;
-    background-color: var(--darkblue);
-    color: #ffffff;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    @media only screen and (min-width: 768px) {
-      &:hover {
-          background-color: #1e345b;
-      }
-    }
-    @media only screen and (max-width: 767px) {
-      &:active {
-          background-color: #1e345b;
-      }
-    }
-}
-
-#imageLabel::before {
-    content: "\f030";
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-}
-
-#imageLabel.file-selected {
-    background-color: #05bc58;
+button, #imageLabel {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 20px;
+  border: none;
+  background-color: var(--darkblue);
+  color: white;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.3s;
+  flex-shrink: 0;
 }
 
 button {
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 20px;
-    border: none;
-    background-color: var(--darkblue);
-    color: #ffffff;
-    cursor: pointer;
-    outline: none;
-    transition: background-color 0.3s;
-    flex-shrink: 0;
-    @media only screen and (min-width: 768px) {
-        &:hover {
-            background-color: #1e345b;
-        }
-    }
-    @media only screen and (max-width: 767px) {
-      button:active {
-          background-color: #1e345b;
+  @media only screen and (min-width: 768px) {
+      &:hover {
+          background-color: var(--lightblue);
       }
+  }
+  @media only screen and (max-width: 767px) {
+    button:active {
+        background-color: #1e345b;
     }
+  }
+}
+
+#imageLabel {
+  color: var(--gray);
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  background: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  width: 40px;
+  height: 40px;
+
+  transition: scale 1s;
+}
+
+#imageLabel:hover {
+  color: var(--lightGray);
+  scale: 1.1;
+}
+
+#imageLabel::before {
+  content: "\f1c5";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+}
+
+#imageLabel.file-selected {
+  color: #05bc58;
+  background: radial-gradient(circle, rgba(5,188,88,0.3442170813637955) 0%, rgba(58,58,58,0) 70%);
 }
 
 
+.message-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 12px 18px;
+}
+
+.message-submit i {
+  transition: rotate 1s;
+}
+
+.message-submit:hover i {
+  rotate: 20deg;
+}
+
+@media only screen and (max-width: 767px) {
+  .message-submit span {
+    display: none;
+  }
+  .message-submit i {
+    transform: translateX(-2px);
+  }
+}
 
 .clear-history-container {
   position: absolute;
@@ -314,12 +362,10 @@ button {
   width: 10px;
   height: 10px;
   border: none;
-  border-radius: 20px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  border-radius: 20px;
   background: var(--lightbg); 
   border: none;
   z-index: -1;
@@ -335,4 +381,8 @@ button {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--lightblue); 
   cursor: move;
+}
+
+#chat-container ::-webkit-scrollbar, #chat-container ::-webkit-scrollbar-track {
+  border-radius: 20px;
 }

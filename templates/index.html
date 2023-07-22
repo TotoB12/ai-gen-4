@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css">
     <link rel="stylesheet" href="https://highlightjs.org/static/demo/styles/atom-one-dark.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="static/style.css">
 </head>
   
@@ -24,15 +25,18 @@
     <div id="chat-container"></div>
   
     <form id="chat-form" enctype="multipart/form-data">
+        <div class='opacity-mask'></div>
         <div class='clear-history-container'>
           <button type="button" id="clear-history" class="clear-history-button">
             <span class="material-symbols-outlined">autorenew</span>Clear history
           </button>
         </div>
-        <textarea id="message" name="message" required placeholder="Type your message..." rows="1"></textarea>
-        <label id="imageLabel" for="image"></label>
-        <input type="file" id="image" name="image" accept="image/*">
-        <button type="submit" style="margin-right: 7px;">Send</button>
+        <div class="input-container">
+          <textarea id="message" name="message" required placeholder="Type your message..." rows="1"></textarea>
+          <label id="imageLabel" for="image"></label>
+          <input type="file" id="image" name="image" accept=".png, .jpeg, .jpg, .webp"/>
+        </div>
+        <button class='message-submit' type="submit" style="margin-right: 7px;"><span>Send</span><i class="fa fa-send"></i></button>
     </form>
   
   <!-- <hide style="visibility: hidden;">

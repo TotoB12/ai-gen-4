@@ -28,8 +28,8 @@ def clear():
           print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 def trim_data(data):
-    if len(data) > 5000:
-        data = data[:5000]
+    if len(data) > 47000:
+        data = data[:47000]
     return data
 
 with open("system_card.txt", "r") as file:
@@ -78,10 +78,10 @@ def generate():
             number_images = re.search(r'^(\d+)', bracket)
             if number_images:
                 number_images = int(number_images.group())
-                bracket_replacement = " ".join(["[" + image_links.pop(0) + "]" for _ in range(number_images)])
+                bracket_replacement = "\n" + " ".join(["[" + image_links.pop(0) + "]" for _ in range(number_images)])
                 ai_message = ai_message.replace(f"[{bracket}]", bracket_replacement, 1)
             else:
-                ai_message = ai_message.replace(f"[{bracket}]", "[" + image_links.pop(0) + "]", 1)
+                ai_message = ai_message.replace(f"[{bracket}]", "\n[" + image_links.pop(0) + "]", 1)
 
     # make it print the "raw" new text
     print(ai_message)
