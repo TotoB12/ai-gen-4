@@ -181,7 +181,6 @@ h1 > img {
 }
 
 #imageLabel {
-    /* Style the label containing the Font Awesome icon */
     display: inline-block;
     padding: 10px 20px;
     font-size: 16px;
@@ -190,13 +189,17 @@ h1 > img {
     color: #ffffff;
     cursor: pointer;
     transition: background-color 0.3s;
-    &:hover {
-        background-color: #1e345b;
+    @media only screen and (min-width: 768px) {
+      &:hover {
+          background-color: #1e345b;
+      }
+    }
+    @media only screen and (max-width: 767px) {
+      &:active {
+          background-color: #1e345b;
+      }
     }
 }
-
-
-
 
 #imageLabel::before {
     content: "\f030";
@@ -219,11 +222,19 @@ button {
     outline: none;
     transition: background-color 0.3s;
     flex-shrink: 0;
+    @media only screen and (min-width: 768px) {
+        &:hover {
+            background-color: #1e345b;
+        }
+    }
+    @media only screen and (max-width: 767px) {
+      button:active {
+          background-color: #1e345b;
+      }
+    }
 }
 
-button:hover {
-    background-color: #1e345b;
-}
+
 
 .clear-history-container {
   position: absolute;

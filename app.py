@@ -39,51 +39,30 @@ with open("system_card.txt", "r") as file:
 def index():
     return render_template("index.html")
 
-@app.route("/generate", methods=["POST"])
+@app.route("/generate", methods=["POST", "GET"])
 def generate():
+    # print(request.method)
+    # print(request.headers)
     # token = os.environ[random.choice(['token', 'token1'])]
     token = os.environ['token1']
     bard = Bard(token=token)
-    if request.content_type == 'application/json':
-        data = request.get_json()
-        conversation = str(data["history"]) + str(data["message"])
-        # print(data)
-        conversation = str(data["history"]) + str(data["message"])
-        messages = str(system) + trim_data(conversation)
-      
-        ai_gen = bard.get_answer(messages)
-      
-        ai_message = ai_gen['content']
-  
-    elif request.content_type.startswith('multipart/form-data'):
-        message = request.form['message']
-        history = json.loads(request.form['history'])
-        conversation = str(history) + str(message)
-        messages = str(system) + trim_data(conversation)
-        if 'image' in request.files:
-            image = request.files['image']
-            if image.filename != '':
-                path = os.path.join('img', "image_" + str(random.randint(0, 1000)) + ".jpg")
-                image.save(path)
-                url = "https://api.imgur.com/3/image"
-                headers = {
-                  'Authorization': 'Client-ID ' + os.environ['imgur']
-                }
-                with open(path, 'rb') as img:
-                    payload={'image': base64.b64encode(img.read())}
-                    response = requests.request("POST", url, headers=headers, data=payload)
-                    image_data = json.loads(response.text)
-                    image_link = image_data['data']['link']
-                    print(image_link)
-                    # image_url = 'https://i.imgur.com/lA700ke.jpg'
-                    image = open(path, 'rb').read()
-                    ai_gen = bard.ask_about_image(message, image)
-                    ai_message = "[" + image_link + "]\n\n" + ai_gen['content']
-                    print(ai_gen)
-                    clear()
-    else:
-        return "Unsupported Media Type", 415
+    data = request.get_json()
+    print(data)
+    conversation = str(data["history"]) + str(data["message"])
+    messages = str(system) + trim_data(conversation)
 
+    if 'image' in request.get_json():
+        print(data["image"])
+        print("yay")
+
+        image = requests.get(data["image"]).content
+        ai_gen = bard.ask_about_image(messages, image)
+        ai_message = ai_gen['content']
+
+
+    else:
+        ai_gen = bard.get_answer(messages)
+        ai_message = ai_gen['content']
 
     if ai_gen["images"] and any(image.strip() for image in ai_gen["images"]):
         images = ai_gen["images"]
@@ -91,6 +70,9 @@ def generate():
         links = [link for link in link_list if "https://lh3.googleusercontent.com/" in link or "http://t0.gstatic.com/" in link]
         print(images)
         print(links)
+
+        if len(list(images)) == 1:
+          links = [list(images)[0]]
       
         image_links = list(links) #use links or ai_gen["images"]
         bracket_contents = re.findall(r'\[(.*?)\]', ai_message)

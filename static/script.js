@@ -1,17 +1,64 @@
 const fileInput = document.getElementById("image");
 const imageLabel = document.getElementById("imageLabel");
 
-// Add an event listener to the file input
 fileInput.addEventListener("change", () => {
-  // Check if a file is selected
   if (fileInput.files.length > 0) {
-    // Add the "file-selected" class to the label
     imageLabel.classList.add("file-selected");
   } else {
-    // If no file is selected, remove the "file-selected" class
     imageLabel.classList.remove("file-selected");
   }
 });
+
+function getBase64Image(imageFile) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(imageFile);
+    reader.onloadend = () => {
+      const base64Data = reader.result.split(',')[1];
+      resolve(base64Data);
+    };
+    reader.onerror = error => reject(error);
+  });
+}
+
+
+async function uploadImageToImgur(imageFile) {
+  return getBase64Image(imageFile)
+    .then(base64Image => {
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "Client-ID 6a8a51f3d7933e1");
+
+      var formdata = new FormData();
+      formdata.append("image", base64Image);
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: formdata,
+        redirect: 'follow'
+      };
+
+      return fetch("https://api.imgur.com/3/image", requestOptions)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            console.log(data.data.link)
+            return data.data.link;
+          } else {
+            throw new Error("Failed to upload image to Imgur.");
+          }
+        })
+        .catch(error => {
+          console.error('Error uploading image:', error);
+          return null;
+        });
+    })
+    .catch(error => {
+      console.error('Error converting image to base64:', error);
+      return null;
+    });
+}
+
 
 function redirectToImage() {
   var imageSource = this.src;
@@ -96,7 +143,7 @@ function addMessage(message, sender, additionalClass)
       imageContainer.className = "image-container";
       imageContainer.appendChild(imageElement);
       console.log(imageElement);
-      messageText.appendChild(imageElement);
+      messageText.appendChild(imageContainer); /* imageElement */
     
     // if it's a code embed
     } else if ((codeMatch = codeSnippetRegex.exec(match[0])) !== null) {
@@ -157,53 +204,77 @@ function removeGeneratingMessage() {
     chatContainer.removeChild(generatingMessageElement);
   }
 }
-document.getElementById("chat-form").addEventListener("submit", function(event) {
-    event.preventDefault();
-    const input = document.getElementById("message");
-    const message = input.value.trim();
-    const image = document.getElementById("image").files[0];
-    if (message.length === 0 && !image) {
-        return;
-    }
-    let fetchOptions;
-    if (image) {
-        let formData = new FormData();
-        formData.append("message", message);
-        formData.append("history", JSON.stringify(conversationHistory));
-        formData.append("image", image);
+document.getElementById("chat-form").addEventListener("submit", async function (event) {
+  event.preventDefault();
+  const input = document.getElementById("message");
+  let message = input.value.trim();
+  const image = document.getElementById("image").files[0];
+  if (message.length === 0 && !image) {
+    return;
+  }
+  
+  let fetchOptions;
+  let imageUrl;
+
+  if (image) {
+    try {
+      imageUrl = await uploadImageToImgur(image);
+      console.log(imageUrl);
+
+      if (imageUrl) {
+        formData = JSON.stringify({ message: message += `\n\n[${imageUrl}]`, history: conversationHistory, image: imageUrl });
+        console.log(formData);
         fetchOptions = {
-            method: "POST",
-            body: formData
+          method: "POST",
+          body: formData,
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          }
         };
-    } else {
-        fetchOptions = {
-            method: "POST",
-            body: JSON.stringify({ message: message, history: conversationHistory }),
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return;
     }
-    addMessage(message, "user");
-    conversationHistory.push({ role: "user", content: message });
-    saveConversationHistory();
-    document.getElementById("image").value = null;
-    imageLabel.classList.remove("file-selected");
-    input.value = "";
-    input.style.height = "";
-    input.focus();
+  } else {
+    console.log(JSON.stringify({ message: message, history: conversationHistory }));
+    formData = JSON.stringify({ message: message, history: conversationHistory });
+    fetchOptions = {
+      method: "POST",
+      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    };
+  }
+
+  addMessage(message, "user");
+  conversationHistory.push({ role: "user", content: message });
+  saveConversationHistory();
+  document.getElementById("image").value = null;
+  imageLabel.classList.remove("file-selected");
+  input.value = "";
+  input.style.height = "";
+  input.focus();
+  
+  if (imageUrl) {
     const generatingMessage = displayGeneratingMessage();
     const additionalClass = (generatingMessage === "Generating response...") ? "generating-message" : "";
-    fetch("/generate", fetchOptions)
-  .then(response => response.json())
-  .then(data => {
-    removeGeneratingMessage();
-    conversationHistory.push({ role: "assistant", content: data });
-    saveConversationHistory();
-    addMessage(data, "bot");
-  });
+    try {
+      const response = await fetch("/generate", fetchOptions);
+      const data = await response.json();
+      removeGeneratingMessage();
+      conversationHistory.push({ role: "assistant", content: data });
+      saveConversationHistory();
+      addMessage(data, "bot");
+    } catch (error) {
+      console.error("Error generating response:", error);
+    }
+  }
 });
+
 document.getElementById("clear-history").addEventListener("click", function() {
     clearHistory();
 });
