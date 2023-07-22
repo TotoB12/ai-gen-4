@@ -136,6 +136,10 @@ h1 > img {
     border: none;
 }
 
+#chat-container img {
+  border-radius: 12px;
+}
+
 /* ---- ---- ---- CHAT FORM ---- ---- ---- */
 
 #chat-form {

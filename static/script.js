@@ -93,6 +93,10 @@ function clearHistory()
   displayWelcomeMessage();
 }
 
+document.getElementById("clear-history").addEventListener("click", function() {
+    clearHistory();
+});
+
 function saveConversationHistory() 
 {
   localStorage.setItem("conversationHistory", JSON.stringify(conversationHistory));
@@ -204,80 +208,72 @@ function removeGeneratingMessage() {
     chatContainer.removeChild(generatingMessageElement);
   }
 }
-document.getElementById("chat-form").addEventListener("submit", async function (event) {
-  event.preventDefault();
-  const input = document.getElementById("message");
-  let message = input.value.trim();
-  const image = document.getElementById("image").files[0];
-  if (message.length === 0 && !image) {
-    return;
-  }
-  
-  let fetchOptions;
-  let imageUrl;
-
-  if (image) {
-    try {
-      imageUrl = await uploadImageToImgur(image);
-      console.log(imageUrl);
-
-      if (imageUrl) {
-        formData = JSON.stringify({ message: message += `\n\n[${imageUrl}]`, history: conversationHistory, image: imageUrl });
-        console.log(formData);
-        fetchOptions = {
-          method: "POST",
-          body: formData,
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          }
-        };
-      }
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      return;
+document.getElementById("chat-form").addEventListener("submit", async function(event) {
+    event.preventDefault();
+    const input = document.getElementById("message");
+    let message = input.value.trim();
+    const image = document.getElementById("image").files[0];
+    if (message.length === 0 && !image) {
+        return;
     }
-  } else {
-    console.log(JSON.stringify({ message: message, history: conversationHistory }));
-    formData = JSON.stringify({ message: message, history: conversationHistory });
-    fetchOptions = {
-      method: "POST",
-      body: formData,
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      }
-    };
-  }
+    let fetchOptions;
+    let imageUrl; // Declare imageUrl here
 
-  addMessage(message, "user");
-  conversationHistory.push({ role: "user", content: message });
-  saveConversationHistory();
-  document.getElementById("image").value = null;
-  imageLabel.classList.remove("file-selected");
-  input.value = "";
-  input.style.height = "";
-  input.focus();
-  
-  if (imageUrl) {
+    if (image) {
+        try {
+            imageUrl = await uploadImageToImgur(image); // Wait for imageUrl
+        } catch (error) {
+            console.error("Error uploading image:", error);
+        }
+
+        if (imageUrl) {
+            formData = JSON.stringify({ message: message += `\n\n[${imageUrl}]`, history: conversationHistory, image: imageUrl });
+            fetchOptions = {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                }
+            };
+        }
+    } else {
+        formData = JSON.stringify({ message: message, history: conversationHistory });
+        fetchOptions = {
+            method: "POST",
+            body: formData,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+    }
+
+    addMessage(message, "user");
+    conversationHistory.push({ role: "user", content: message });
+    saveConversationHistory();
+    document.getElementById("image").value = null;
+    imageLabel.classList.remove("file-selected");
+    input.value = "";
+    input.style.height = "";
+    input.focus();
     const generatingMessage = displayGeneratingMessage();
     const additionalClass = (generatingMessage === "Generating response...") ? "generating-message" : "";
-    try {
-      const response = await fetch("/generate", fetchOptions);
-      const data = await response.json();
-      removeGeneratingMessage();
-      conversationHistory.push({ role: "assistant", content: data });
-      saveConversationHistory();
-      addMessage(data, "bot");
-    } catch (error) {
-      console.error("Error generating response:", error);
+    if (fetchOptions) {
+        try {
+            const response = await fetch("/generate", fetchOptions);
+            const data = await response.json();
+            removeGeneratingMessage();
+            conversationHistory.push({ role: "assistant", content: data });
+            saveConversationHistory();
+            addMessage(data, "bot");
+        } catch (error) {
+            console.error("Error fetching response:", error);
+        }
     }
-  }
 });
 
-document.getElementById("clear-history").addEventListener("click", function() {
-    clearHistory();
-});
+
 function adjustTextareaHeight(textarea) {
     textarea.style.height = "auto";
     const maxHeight = window.innerHeight * 0.3;

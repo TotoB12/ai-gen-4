@@ -41,8 +41,6 @@ def index():
 
 @app.route("/generate", methods=["POST", "GET"])
 def generate():
-    # print(request.method)
-    # print(request.headers)
     # token = os.environ[random.choice(['token', 'token1'])]
     token = os.environ['token1']
     bard = Bard(token=token)
